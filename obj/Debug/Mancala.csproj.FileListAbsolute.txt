@@ -1,0 +1,6 @@
+/Users/ahuvacheifetz/Projects/Mancala/Mancala/obj/Debug/Mancala.csprojAssemblyReference.cache
+/Users/ahuvacheifetz/Projects/Mancala/Mancala/obj/Debug/Mancala.csproj.CoreCompileInputs.cache
+/Users/ahuvacheifetz/Projects/Mancala/Mancala/bin/Debug/Mancala.exe
+/Users/ahuvacheifetz/Projects/Mancala/Mancala/bin/Debug/Mancala.pdb
+/Users/ahuvacheifetz/Projects/Mancala/Mancala/obj/Debug/Mancala.exe
+/Users/ahuvacheifetz/Projects/Mancala/Mancala/obj/Debug/Mancala.pdb

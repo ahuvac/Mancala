@@ -1,5 +1,5 @@
 ﻿using System;
-namespace Mancala
+namespace Mancalagame
 {
     public class Trace
     {

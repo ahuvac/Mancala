@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections;
 
-namespace Mancala
+namespace Mancalagame
 {
     class Board
     {
@@ -42,33 +42,46 @@ namespace Mancala
                 this.urPot = other.urPot;
         }
 
+        public bool canMove( int row, int col)
+        {
+            if (row == 0)
+            {
+                col = 7 - col;
+                //flip it becuase the array goes backwards
+                return board[row, col - 1] > 0;
+
+            }
+            else
+            {
+                return board[row, col - 1] > 0;
+            }
+        }
+
 
         // display the current status of the board
         public void showBoard()
         {
-            Console.WriteLine(" ---------------------------------");
+            Console.WriteLine(" -------------------------------------------------");
             Console.Write("| " + " ");
-            Console.Write("  ");
-
+            Console.Write("    ");
             for (int col = NR_COLS - 1; col >= 0; col--)
             {
-                Console.Write($"| {board[0, col]} ");
+                Console.Write($"|  {board[0, col]}  ");
             }
-            Console.WriteLine("|    |");
-            Console.WriteLine("| " + urPot + "  |-----------------------|  " + myPot + " |");
-            Console.Write("|    |");
+            Console.WriteLine("|      |");
+            Console.WriteLine("|   " + urPot + "  |-----------------------------------|  " + myPot + "   |");
+            Console.Write("|      |");
             for (int col = 0; col < NR_COLS; col++)
             {
-                Console.Write($" {board[1, col]} |");
+                Console.Write($"  {board[1, col]}  |");
             }
-            Console.WriteLine("    |");
-
-            Console.WriteLine(" ---------------------------------");
-            Console.WriteLine("       1   2   3   4   5   6");
+            Console.WriteLine("      |");
+            Console.WriteLine(" -------------------------------------------------");
+            Console.WriteLine("         1      2     3     4     5     6");
         }
 
         //moves the pile from designated pit and distibutes the pieces into the following pits
-        public Board makeMove( Board board, int row, int column)
+        public Board makeMove(Board board, int row, int column)
         {
             Board newBoard = new Board(board);
             if (row == 0)
@@ -94,7 +107,7 @@ namespace Mancala
                     else
                     {
                         newBoard.myPot++;
-                        r = 0;     
+                        r = 0;
                     }
                 }
                 else
@@ -102,52 +115,70 @@ namespace Mancala
                     newBoard.board[r, index + 1]++;
                     index++;
                 }
-            }           
+
+            }
             return newBoard;
         }
 
+        public Boolean gameOver(Board board)
+        {
+            if (board.getPossibleMoves(board, 0).Count > 0 || board.getPossibleMoves(board, 1).Count > 0) return false;
+            else return true;
+        }
 
-        //send list of possible boards
-        public ArrayList getPossibleMoves(Board board)
+        //get list of possible boards
+        public ArrayList getPossibleMoves(Board gameBoard, int player)
         {
             ArrayList moves = new ArrayList();
-            for (int col = 0; col > NR_COLS; col++)
+            for (int col = 1; col <= NR_COLS; col++)
             {
-                if (board.board[0, col] > 0)
+                if (gameBoard.board[player, col - 1] > 0)
                 {
-                    Board tempBoard = new Board(board);
-                    tempBoard.makeMove(tempBoard, 0, col);
+                    Board tempBoard = new Board(gameBoard);
+                    tempBoard = tempBoard.makeMove(tempBoard, player, col);
                     moves.Add(tempBoard);
                 }
             }
             return moves;
         }
 
-
-        public bool isWin(int row, int column)
+        // returns whether one row is empty
+        public bool isEmpty(int row)
         {
-            if (board[row, column] == 7 - column)
-            {
-                return true;
-            }
-            else return false;
-        }
+            bool retVal = true;
 
-        public double findMove()
-        {
             for (int col = 0; col < NR_COLS; col++)
             {
-                if (isWin(0, col)) return col;
-
-                else if (isWin(1, col)) return col;
+                if (board[row, col] > 0)
+                {
+                    retVal = false;
+                    goto _end_search;
+                }
             }
-            return 0;
+            _end_search:
+            return retVal;
         }
+
+     
+      
 
         public double heuristicValue()
         {
             return myPot - urPot / 48;
+        }
 
+        public Board finish(Board gameBoard, int row)
+        {
+            int total = 0;
+            Board board = new Board(gameBoard);
+            for (int col = 0; col < NR_COLS; col++)
+            {
+                total += board.board[row, col];             
+                board.board[row, col] = 0;
+            }
+            if (row == 0) board.myPot += total;
+            else board.urPot += total;
+            return board;
         }
     }
 }

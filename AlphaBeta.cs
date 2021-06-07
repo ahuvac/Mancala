@@ -2,15 +2,18 @@
 using System.Collections;
 using System.Diagnostics;
 
-namespace Mancala
+namespace Mancalagame
 {
     class AlphaBeta
     {
         public static double Value(Board board, int depth, double alfa, double beta, int player)
         {
+            int computer = 0;
+            int user = 1;
             Trace.println("Enter alphabeta d = " + depth + " a = " + alfa + " b = " + beta + " P = " + player, 5);
 
             double value = 0.0;
+
             if (depth == 0)
             {
                 value = board.heuristicValue();
@@ -18,13 +21,13 @@ namespace Mancala
 
             else
             {
-                int opponent = player == 0 ? 1 : 0;
-                if (player == 0)
+               // Player opponent = player == Player.MAX ? Player.MIN : Player.MAX
+                if (player == computer)
                 {
-                    ArrayList boards = new ArrayList();
+                    ArrayList boards = board.getPossibleMoves(board, computer);
                     foreach (Board move in boards)
                     {
-                        double thisVal = Value(move, depth - 1, alfa, beta, opponent);
+                        double thisVal = Value(move, depth - 1, alfa, beta, user);
                         if (thisVal > alfa)
                         {
                             alfa = thisVal;
@@ -38,17 +41,20 @@ namespace Mancala
                     value = alfa;
                 }
                 else
-                // player == Player.MIN
+                // player == user
                 {
-                    ArrayList boards = new ArrayList();
+                    ArrayList boards = board.getPossibleMoves(board, user);
+
                     foreach (Board move in boards)
                     {
-                        double thisVal = Value(move, depth - 1, alfa, beta, opponent);
+                        double thisVal = Value(move, depth - 1, alfa, beta, computer);
                         if (thisVal < beta)
                         {
                             beta = thisVal;
                         }
-                        if (beta <= alfa) { break; }
+                        if (beta <= alfa) {
+                            break;
+                        }
                     }
                 }
                 value = beta;
